@@ -1,0 +1,13 @@
+.bannerContainer{
+    background: url(../../../public//image/banner/banner-bg-1.png) no-repeat;
+    background-size: cover;
+    background-position: center center;
+}
+.bannerTitle{
+    font-family: "Raleway", sans-serif;
+}
+.bannerImage{
+    background: url(../../../public//image/banner/banner-img-shape-1.png) no-repeat;
+    background-size: contain;
+    background-position: center center;
+}
