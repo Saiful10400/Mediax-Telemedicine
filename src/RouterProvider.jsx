@@ -11,6 +11,7 @@ import DoctorEducationQualification from "./Components/Doctor dashboard/componen
 import DoctorWorkExperience from "./Components/Doctor dashboard/components/doctor profile dashboard/DoctorWorkExperience";
 import DashboardRoute from "./Components/Doctor dashboard/components/Dashboard route nested/DashboardRoute";
 import AllDoctor from "./Components/All doctors/AllDoctor";
+import SecureRoute from "./Components/Private route Security/SecureRoute";
 
 export const router=createBrowserRouter([{
     path:"/",
@@ -22,7 +23,7 @@ export const router=createBrowserRouter([{
         },
         {
             path:"/doctor-dashboard",
-            element:<DoctorDashboard></DoctorDashboard>,
+            element:<SecureRoute><DoctorDashboard></DoctorDashboard></SecureRoute>,
             children:[
                 {
                     path:"/doctor-dashboard",
