@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { DoctorSpeciality } from "../CommonData";
 import { dataProvider } from "../context api/ContextProvider";
 import { axiosPublic } from "../../Custom hoocks/useAxiosPublic";
-import swal from 'sweetalert';
+import swal from 'sweetalert2';
 export const formInputStyle =
   "w-full py-2 mb-4 px-5 rounded-xl focus:outline-none";
 const DoctorSignup = () => {

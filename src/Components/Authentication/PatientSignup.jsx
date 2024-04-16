@@ -9,7 +9,7 @@ import { axiosPublic } from "../../Custom hoocks/useAxiosPublic";
 import { dataProvider } from "../context api/ContextProvider";
 import { updateProfile } from "firebase/auth";
 import { auth } from "../../firebase/firebase.config";
-import swal from "sweetalert";
+import swal from "sweetalert2";
 const PatientSignup = () => {
 
     let [uploadLoader,setUploadLoader]=useState(false)

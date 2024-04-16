@@ -22,7 +22,11 @@ const move=useNavigate()
     const li=<>
     <NavLink className={""} to={"/doctor-dashboard/Profile"}><li className='text-xl flex justify-center items-center gap-3'><FaUser /><span>Profile</span></li></NavLink>
     <NavLink className={""} to={"/doctor-dashboard"}><li className='text-xl flex justify-center items-center gap-3'><MdSpaceDashboard /> <span>Dashboard</span></li></NavLink>
-    <button className='hover:text-[#164dc4] hover:font-bold transition-all duration-200' onClick={()=>logoutHandle().then(()=>move("/"))}  to={"/doctor-dashboard/logout"}><li className='text-xl flex justify-center items-center gap-3'><MdLogout /> <span>Logout</span></li></button>
+    <button className='hover:text-[#164dc4] hover:font-bold transition-all duration-200' onClick={()=>logoutHandle().then(()=>{
+        refetch()
+        move("/")
+        
+    })}  to={"/doctor-dashboard/logout"}><li className='text-xl flex justify-center items-center gap-3'><MdLogout /> <span>Logout</span></li></button>
      
     </>
 
