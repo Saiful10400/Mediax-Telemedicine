@@ -1,9 +1,9 @@
 import React, { useContext, useRef, useState } from "react";
 import authimg from "../../../public/image/login/login.svg";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { dataProvider } from "../context api/ContextProvider";
 import { axiosPublic } from './../../Custom hoocks/useAxiosPublic';
-import { swal } from 'sweetalert';
+
 export const inputStyle =
   "w-full focus:outline-none py-3 px-2 rounded-lg font-bold";
   export const btnStyle="btn bg-[#00ca99] text-white hover:bg-[#40e7c3] hover:text-gray-100 rounded-full px-4"
@@ -11,7 +11,7 @@ const Authentication = () => {
   const { pathname } = useLocation();
   const login = pathname === "/login" ? true : false;
 const {loginWithEmail}=useContext(dataProvider)
-
+const move =useNavigate()
 const formSubmitHandle=(e)=>{
   e.preventDefault()
   const form=e.target
@@ -20,7 +20,7 @@ const formSubmitHandle=(e)=>{
 
   loginWithEmail(email,password)
   .then(res=>{
-    swal("Login success", "", "success")
+   move("/")
   })
 }
   return (
