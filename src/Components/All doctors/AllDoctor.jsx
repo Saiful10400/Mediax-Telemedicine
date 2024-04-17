@@ -60,7 +60,7 @@ const AllDoctor = () => {
                 </div>
               </div>
               <div className="flex items-center justify-evenly mt-7">
-                <Link className="btn bg-[#00ca99] rounded-3xl text-white">View profile</Link>
+                <Link to={"/doctor/"+item._id} className="btn bg-[#00ca99] rounded-3xl text-white">View profile</Link>
                 <Link className="btn bg-[#00ca99] rounded-3xl text-white">Book Appointment</Link>
               </div>
             </div>

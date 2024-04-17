@@ -12,6 +12,8 @@ import DoctorWorkExperience from "./Components/Doctor dashboard/components/docto
 import DashboardRoute from "./Components/Doctor dashboard/components/Dashboard route nested/DashboardRoute";
 import AllDoctor from "./Components/All doctors/AllDoctor";
 import SecureRoute from "./Components/Private route Security/SecureRoute";
+import { axiosPublic } from "./Custom hoocks/useAxiosPublic";
+import DoctorPage from "./Components/All doctors/DoctorPage";
 
 export const router=createBrowserRouter([{
     path:"/",
@@ -69,6 +71,11 @@ export const router=createBrowserRouter([{
         {
             path:"/all-doctors",
             element:<AllDoctor></AllDoctor>
+        },
+        {
+            path:"/doctor/:id",
+            loader:({params})=>axiosPublic.post(`/get-a-doctor-data-with-id`,{id:params.id}),
+            element:<DoctorPage></DoctorPage>
         }
 
     ]

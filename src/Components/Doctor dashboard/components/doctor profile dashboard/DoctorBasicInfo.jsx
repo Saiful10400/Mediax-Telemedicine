@@ -98,10 +98,18 @@ const DoctorBasicInfo = () => {
       day.dayName=item
       day.start=form[item+"start"].value
       day.end=form[item+"end"].value
-      appointmentSchedule.push(day)
+      
+      if(day.start && day.end){
+        appointmentSchedule.push(day)
+        
+      }
 
     })
-    console.log({firstFee,followupFee})
+    if(person.email){
+      axiosPublic.post("/update-appointment-data",{email:person.email,appointmentData:{firstFee,followupFee,appointmentSchedule}})
+      .then(res=>console.log(res.data))
+
+    }
   }
 
   return (
