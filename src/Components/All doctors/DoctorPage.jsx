@@ -116,6 +116,84 @@ joinedDate=new Date(joinedDate)?.toLocaleDateString("en-US",{ day: '2-digit', mo
 
     <TabPanel>
       {/* doctor details like bio and appointment credentials. */}
+      <div className="flex gap-x-6">
+        <div className="w-[50%] bg-white p-4 rounded-lg">
+            {/* doctor bio. */}
+            <h1 className="font-bold text-xl">
+                {data?.title + " " + data?.firstName + " " + data?.lastName} - <span className="text-lg font-medium">{educaiton}</span>
+              </h1>
+              <p className="mt-3 font-normal text-lg text-gray-600">{data?.bio}</p>
+        </div>
+        <div className="w-[50%]">
+            <div className="bg-white p-2 rounded-lg">
+                <h1 className="font-bold text-lg">Availability</h1>
+                <div className="border-l-2 pl-2 border-[#4285f4] mt-3 py-1">
+                <h1 className="font-bold text-md text-gray-400">Week days</h1>
+                <div>
+                    {
+                        data?.appointmentData?.appointmentSchedule?.map((item,idx)=>{
+                            return(
+                                <h1 className="font-bold text-md" key={idx}>{item?.dayName} {`(${item?.start+"-"+ item?.end})`}</h1>
+                            )
+                        })
+                    }
+                </div>
+                </div>
+
+            </div>
+            <div className="bg-white p-4 rounded-lg mt-3">
+              <h1 className="font-bold text-lg">At a Glance</h1>
+              <div className="grid grid-cols-2 gap-3">
+
+              <div className="border-l-2 pl-2 border-[#4285f4] mt-3 py-1">
+                <h1 className="font-bold text-md text-gray-400">Consultation Fee</h1>
+                <div>
+                <h1 className="font-bold">
+              <span className="text-lg">
+                ৳ {data?.appointmentData?.firstFee}
+              </span>{" "}
+              (incl. VAT)
+            </h1>
+                </div>
+                </div>
+
+              <div className="border-l-2 pl-2 border-[#4285f4] mt-3 py-1">
+                <h1 className="font-bold text-md text-gray-400">Follow-up Fee</h1>
+                <div>
+                <h1 className="font-bold">
+              <span className="text-lg">
+                ৳ {data?.appointmentData?.followupFee}
+              </span>{" "}
+              (incl. VAT)
+            </h1>
+            <h1 className="font-semibold">(with in 14 days)</h1>
+                </div>
+                </div>
+
+              <div className="border-l-2 pl-2 border-[#4285f4] mt-3 py-1">
+                <h1 className="font-bold text-md text-gray-400">Patient Attended</h1>
+                <div>
+                <h1 className="font-bold">
+              200
+            </h1>
+                </div>
+                </div>
+              <div className="border-l-2 pl-2 border-[#4285f4] mt-3 py-1">
+                <h1 className="font-bold text-md text-gray-400">Doctor Code</h1>
+                <div>
+                <h1 className="font-bold">
+              
+                  {data?._id.slice(0,6)}
+               
+            </h1>
+                </div>
+                </div>
+
+              </div>
+
+            </div>
+        </div>
+      </div>
     </TabPanel>
     <TabPanel>
       <h2>Any content 2</h2>
