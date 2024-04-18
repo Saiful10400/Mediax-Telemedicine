@@ -8,6 +8,8 @@ import 'react-tabs/style/react-tabs.css';
 import { FaInfo } from "react-icons/fa";
 import { MdWork } from "react-icons/md";
 import { MdRateReview } from "react-icons/md";
+import WorkExperience from "./DoctorPage common components/WorkExperience";
+import DoctorReview from "./DoctorPage common components/DoctorReview";
 const DoctorPage = () => {
   const { data } = useLoaderData();
   console.log(data);
@@ -77,7 +79,7 @@ joinedDate=new Date(joinedDate)?.toLocaleDateString("en-US",{ day: '2-digit', mo
               <span>
                 <FaVideo />
               </span>
-              See Doctor Now
+              See Doctor
             </button>
           </div>
         </div>
@@ -129,7 +131,7 @@ joinedDate=new Date(joinedDate)?.toLocaleDateString("en-US",{ day: '2-digit', mo
                 <h1 className="font-bold text-lg">Availability</h1>
                 <div className="border-l-2 pl-2 border-[#4285f4] mt-3 py-1">
                 <h1 className="font-bold text-md text-gray-400">Week days</h1>
-                <div>
+                <div className="grid grid-cols-2 w-[60%] gap-y-4">
                     {
                         data?.appointmentData?.appointmentSchedule?.map((item,idx)=>{
                             return(
@@ -196,10 +198,15 @@ joinedDate=new Date(joinedDate)?.toLocaleDateString("en-US",{ day: '2-digit', mo
       </div>
     </TabPanel>
     <TabPanel>
-      <h2>Any content 2</h2>
+      <div className="grid grid-cols-2 gap-x-3">{data?.worked?.map((item,idx)=><WorkExperience data={item} key={idx}></WorkExperience>)}</div>
     </TabPanel>
     <TabPanel>
-      <h2>Any content 2</h2>
+      <div className="grid grid-cols-2 gap-3">
+        <DoctorReview></DoctorReview>
+        <DoctorReview></DoctorReview>
+        <DoctorReview></DoctorReview>
+        <DoctorReview></DoctorReview>
+      </div>
     </TabPanel>
   </Tabs>
       </div>
