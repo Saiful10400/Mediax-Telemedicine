@@ -69,7 +69,7 @@ const[refire,setRefire]=useState(false)
         })
         return ()=>unsubscribe
     },[refire])
-console.log({personData,doctorData,person})
+
 
 // function for reload state change.
 const refetch=()=>{
