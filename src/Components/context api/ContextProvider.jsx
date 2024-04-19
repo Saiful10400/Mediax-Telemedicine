@@ -45,12 +45,15 @@ const[refire,setRefire]=useState(false)
     useEffect(()=>{
         const unsubscribe=onAuthStateChanged(auth,(user)=>{
             if(user){
+              
               setPerson(user)
               //  check patient.
               axiosPublic.post("/get-a-patient-with-email",{email:user.email})
               .then(res=>{
+   
                 if(res.data){
-                  setPerosnData(res.data)
+                  setPerosnData(res.data.data)
+                  
                 }
               })
               // Check doctor.
@@ -59,6 +62,7 @@ const[refire,setRefire]=useState(false)
                 if(res.data){
                   setDoctordata(res.data)
                   setLoading(false)
+                  
                 }
               })
             }else{
