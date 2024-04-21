@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import logo from "../../../public/image/logo.svg";
 import { Link, NavLink } from "react-router-dom";
+import { BiMessageDetail } from "react-icons/bi";
 import "./navbar.css"
+import Chat from "../Chat/Chat";
+import { dataProvider } from "../context api/ContextProvider";
 
 const Navbar = () => {
+
+  // state for hide or show chat container.
+  const{setchat,personData,doctorData}=useContext(dataProvider)
+  
   const li = (
     <>
       <li>
@@ -37,7 +44,24 @@ const Navbar = () => {
           {li}
         </ul>
       </div>
-      <div className="w-[40%] flex justify-end ">
+      <div className="w-[40%] flex justify-end items-center gap-x-3 relative">
+        {/* chat box */}
+
+        
+         {
+          doctorData||personData?<>
+           <button onClick={setchat} className="text-4xl"><BiMessageDetail /></button>
+        
+        {/* chatbar div. */}
+        
+          <Chat></Chat>
+          </>:""
+         }
+        
+
+
+
+
         <Link to={"/login"} className="btn text-[16px] font-semibold rounded-full px-8 bg-gradient-to-r from-[#4842f4] text-white to-[#4cddf2]">
           Login
         </Link>

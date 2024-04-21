@@ -14,15 +14,13 @@ import { auth } from '../../firebase/firebase.config';
 import { axiosPublic } from '../../Custom hoocks/useAxiosPublic';
 import { useNavigate } from 'react-router-dom';
 
+// connect socket io server.
 const socket=io("http://localhost:5000")
+
+
+
+
 export const dataProvider=createContext(null)
-
-
-
-// socket io practice.
-
-
-
 
 
 
@@ -39,6 +37,14 @@ const[doctorData,setDoctordata]=useState(null)
 const[loading,setLoading]=useState(true)
 // invalid for him,who are not doctor but trying ot signin as a doctor.
 const[invalid,setInvalid]=useState(false)
+// chat show or not.
+const[chatShow,setChatShow]=useState(false)
+
+
+// change chat show or not.
+const setchat=()=>{
+  setChatShow(prev=>!prev)
+}
 
 // state for refetch data again.
 const[refire,setRefire]=useState(false)
@@ -62,6 +68,11 @@ const[refire,setRefire]=useState(false)
                 if(res.data){
                   setDoctordata(res.data)
                   setLoading(false)
+                 if(res.data.publish){
+                   // connect socket server as a doctor.
+                  socket.emit("connection",{email:res.data.email,photoUrl:res.data?.profilePhoto,type:"doctor"})
+                 }
+                 
                   
                 }
               })
@@ -80,7 +91,7 @@ const refetch=()=>{
   setRefire(prev=>!prev)
 }
 
-
+// #### authentication related functions. ####
 
  // all necessary login credentials is here.................
 
@@ -104,8 +115,18 @@ const refetch=()=>{
 
 
 
+  // socket io related events handle. ####
+
+  // get connected doctors.
+  const[activeDoctors,setActiveDoctors]=useState([])
+  useEffect(()=>{
+    socket.on("activeDoctors",(data)=>setActiveDoctors(data))
+  },[socket])
+  console.log(activeDoctors)
+
+
     const contextData={
-        logoutHandle,emailAndPasswordsignup,loginWithEmail,person,socket,personData,doctorData,loading,invalid,refetch
+        logoutHandle,emailAndPasswordsignup,loginWithEmail,person,socket,personData,doctorData,loading,invalid,refetch,setchat,chatShow
     }
     return (
        <dataProvider.Provider value={contextData}>
