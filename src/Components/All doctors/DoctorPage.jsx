@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { FaRegHeart } from "react-icons/fa";
 import { FaVideo } from "react-icons/fa";
@@ -13,13 +13,16 @@ import DoctorReview from "./DoctorPage common components/DoctorReview";
 import FormInput from "../../Common component/FormInput";
 import "./doctorPage.css";
 import { dataProvider } from "../context api/ContextProvider";
+import useImgUpload from "../../Custom hoocks/useImgbb";
+import { axiosPublic } from "../../Custom hoocks/useAxiosPublic";
+import Swal, { swal } from 'sweetalert2/dist/sweetalert2.js'
 const DoctorPage = () => {
   const { data } = useLoaderData();
-  console.log(data);
+
 
   // get patient data.
-  const{personData}=useContext(dataProvider)
-  console.log(personData)
+  const { personData } = useContext(dataProvider);
+  console.log(personData);
 
   // doctor eudcation degree handle.
   let educaiton = [];
@@ -40,6 +43,75 @@ const DoctorPage = () => {
     month: "short",
     year: "numeric",
   });
+
+  let DocumetUpload=useImgUpload()
+
+  let [docUrls,setDocUrls]=useState([])
+  let[uploading,setUploading]=useState(false)
+  // patient necessary document's post handle.
+  const fileSubmitHandle=(e)=>{
+    const files=e.target.files
+   let documetns=[]
+  Object.entries(files)?.map((item)=>documetns.push(item[1]))
+  
+  // now letsUPload Documents images in imgbb.
+  
+  documetns?.map(item=>{
+    DocumetUpload(item)
+    .then(res=>res.json())
+    .then(({data})=>{
+      
+      setDocUrls([...docUrls,data.url])
+      
+       
+       
+    })
+  })
+  
+
+  }
+
+console.log(data)
+  // modal form data submit handle.
+  const modalDataSubmitHandle=(e)=>{
+    e.preventDefault()
+    const form=e.target
+    
+    // values of form data.
+  if(data){
+    let previousDissage=e.target.otherProblems.value
+    let predissage=previousDissage.split(",")
+    
+    let formData={
+    name :form.name.value ,
+    email :form.email.value  ,
+    phone:form.phone.value , 
+    age:form.age.value ,
+    AppointmentTime:form.appTime.value  ,
+    AppointmentDate:form.appDate.value , 
+    height:form.height.value , 
+    weight:form.weight.value , 
+    appoinmentSubject:form.appFor.value , 
+    mainProblem:form.mainProblem.value,  
+    comment:form.comment.value , 
+    previousDissage: predissage,
+    necessaryDocuments: [],
+    gender:form.gender.value ,
+    ptientPhoto:personData?.profilePhoto
+    }
+    console.log(personData)
+    // let's post data into back-end (here we use doctor email as doctor id.).
+    
+    axiosPublic.post("/doctor-app-reques",{id:data.email,data:formData})
+    .then(res=>{
+      console.log(res.data)
+      if(res.data.modifiedCount===1){
+        alert("Your request submitted.")
+      }
+    })
+  }
+ 
+  }
 
   return (
     <div className="lg:w-[1600px] mx-auto">
@@ -238,7 +310,7 @@ const DoctorPage = () => {
           <TabPanel>
             <div className="grid grid-cols-2 gap-x-3">
               {data?.worked?.map((item, idx) => (
-                <WorkExperience data={item} key={idx}></WorkExperience>
+                <WorkExperience bg="gray" data={item} key={idx}></WorkExperience>
               ))}
             </div>
           </TabPanel>
@@ -258,7 +330,7 @@ const DoctorPage = () => {
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
 
       <dialog id="my_modal_3" className="modal">
-        <div id="modal_container" className="modal-box max-w-[700px]">
+        <div id="modal_container" className="modal-box max-w-[700px] p">
           <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
@@ -283,81 +355,96 @@ const DoctorPage = () => {
               </div>
             </div>
             {/* form start form here. */}
-            <form className=" mt-4">
-
-
+            <form onSubmit={modalDataSubmitHandle} className=" mt-4">
               <div className="grid grid-cols-2 gap-x-4">
-              <FormInput
-                defaultValue={`${personData?.firstName} ${personData?.lastName}`}
-                name="name"
-                type="text"
-                title="Patient Name"
-              ></FormInput>
-              <FormInput
-                defaultValue={personData?.email}
-                name="email"
-                type="email"
-                title="Patient Email"
-              ></FormInput>
-              <FormInput
-                name="phone"
-                type="number"
-                title="Patient Phone"
-              ></FormInput>
-              <FormInput
-                name="gender"
-                type="text"
-                title="Patient Gender"
-              ></FormInput>
-              <FormInput
-                name="age"
-                type="number"
-                title="Patient Age"
-              ></FormInput>
-              <FormInput
-                name="height"
-                type="number"
-                title="Patient height (c.m)"
-              ></FormInput>
-              <FormInput
-                name="weight"
-                type="number"
-                title="Patient weight (k.m)"
-              ></FormInput>
-              <FormInput
-                name="appDate"
-                type="date"
-                title="Appointment Date"
-              ></FormInput>
-              <FormInput
-                name="appTime"
-                type="time"
-                title="Appointment Time"
-              ></FormInput>
-              <FormInput
-                name="appFor"
-                type="text"
-                title="Appointment For"
-              ></FormInput>
-              <FormInput
-                name="mainProblem"
-                type="text"
-                title="Patient Main Problem"
-              ></FormInput>
-              <FormInput
-                name="otherProblems"
-                type="text"
-                title="Patient otherProblems (write with comma)"
-              ></FormInput>
+                <FormInput
+                  defaultValue={`${personData?.firstName} ${personData?.lastName}`}
+                  name="name"
+                  type="text"
+                  title="Patient Name"
+                ></FormInput>
+                <FormInput
+                  defaultValue={personData?.email}
+                  name="email"
+                  type="email"
+                  title="Patient Email"
+                ></FormInput>
+                <FormInput
+                  name="phone"
+                  type="number"
+                  title="Patient Phone"
+                ></FormInput>
+                <FormInput
+                  name="gender"
+                  type="text"
+                  title="Patient Gender"
+                ></FormInput>
+                <FormInput
+                  name="age"
+                  type="number"
+                  title="Patient Age"
+                ></FormInput>
+                <FormInput
+                  name="height"
+                  type="number"
+                  title="Patient height (c.m)"
+                ></FormInput>
+                <FormInput
+                  name="weight"
+                  type="number"
+                  title="Patient weight (k.g)"
+                ></FormInput>
+                <FormInput
+                  name="appDate"
+                  type="date"
+                  title="Appointment Date"
+                ></FormInput>
+                <FormInput
+                  name="appTime"
+                  type="time"
+                  title="Appointment Time"
+                ></FormInput>
+                <FormInput
+                  name="appFor"
+                  type="text"
+                  title="Appointment For"
+                ></FormInput>
+                <FormInput
+                  name="mainProblem"
+                  type="text"
+                  title="Patient Main Problem"
+                ></FormInput>
+                <FormInput
+                  name="otherProblems"
+                  type="text"
+                  title="Patient otherProblems (write with comma)"
+                ></FormInput>
+                
               </div>
-              <FormInput
-                name="documents"
-                type="file"
-                title="Upload Necessary Files"
-              ></FormInput>
-             
-
-
+              <div>
+                <label className="relative" htmlFor={name}>
+                  <h1 className="text-md mb-2 font-semibold">
+                    Describe your problem in details.
+                  </h1>
+                  <textarea className="w-full rounded-xl py-2 px-3 focus:outline-none" name="comment" rows="5"></textarea>
+                </label>
+              </div>
+              <div>
+                <label className="relative" htmlFor={name}>
+                  <h1 className="text-md mb-2 font-semibold">
+                    Upload Necessary Files
+                  </h1>
+                  <input onInput={fileSubmitHandle}
+                    multiple
+                    className="w-full focus:outline-none border-2 border-gray-300 font-semibold py-2 px-3 rounded-lg"
+                    type="file"
+                    id="documents"
+                    name="documents"
+                  />
+                </label>
+              </div>
+              
+              <button className="btn btn-success w-full mt-4">Submit Request</button>
             </form>
           </div>
         </div>

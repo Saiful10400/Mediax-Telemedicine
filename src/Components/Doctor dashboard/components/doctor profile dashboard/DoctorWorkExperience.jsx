@@ -1,19 +1,28 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { btnStyle, inputStyle } from '../../../Authentication/Authentication';
+import { dataProvider } from '../../../context api/ContextProvider';
+import WorkExperience from '../../../All doctors/DoctorPage common components/WorkExperience';
+import { axiosPublic } from '../../../../Custom hoocks/useAxiosPublic';
 
 const DoctorWorkExperience = () => {
-
+const{doctorData}=useContext(dataProvider)
+console.log(doctorData)
     const[current,setcurrent]=useState(false)
+   
     // work submit.
     const workSubmit=(e)=>{
         e.preventDefault()
         const form=e.target
         const instituteName=form.intName.value
-        const department=form.dptName.value
-        const designation=form.dsg.value
+        const department=form.depName.value
+        const designation=form.dsgName.value
         const period={start:form.start.value,end:current?"present":form.end.value}
-        const data={instituteName,department,designation,period,data}
-        console.log(data)
+        const data={instituteName,department,designation,period}
+        
+        // let's post doctor work experience to database.(here id will be doctor email.)
+
+        axiosPublic.post("/add-doctor-work-experience",{data})
+        .then(res=>console.log(res.data))
     }
     return (
       <div>
@@ -112,32 +121,11 @@ const DoctorWorkExperience = () => {
             <h1 className="text-[#164dc4]  text-lg font-bold border-b-2 mt-5 mb-2">
               All work experience
             </h1>
-            {/* <div className="grid grid-cols-4 gap-5">
-            {
-                doctorEducation?.map((item,idx)=>{
-                    return(
-                        <div key={idx} className="bg-[#eceffd] p-2 rounded-xl">
-                            <h1 className="text-xl font-bold">{item.degreeName}</h1>
-                            <div className="flex gap-5 justify-start items-center mt-4">
-                                {
-                                    item.subject &&<div className="flex justify-center items-center flex-col gap-1">
-                                    <h1 className="text-lg font-normal">Subject</h1>
-                                    <h1 className="font-bold">{item.subject}</h1>
-                                </div>
-                                }
-                                {
-                                    item.institute &&<div className="flex justify-center items-center flex-col gap-1">
-                                    <h1 className="text-lg font-normal">Institute</h1>
-                                    <h1 className="font-bold">{item.institute}</h1>
-                                </div>
-                                }
-                                
-                            </div>
-                        </div>
-                    )
-                })
-            }
-        </div> */}
+            <div className="grid grid-cols-2 gap-x-3">
+              {doctorData?.worked?.map((item, idx) => (
+                <WorkExperience background="gray" data={item} key={idx}></WorkExperience>
+              ))}
+            </div>
           </div>
         </div>
       </div>

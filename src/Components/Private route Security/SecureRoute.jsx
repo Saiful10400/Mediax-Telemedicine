@@ -3,7 +3,7 @@ import { dataProvider } from '../context api/ContextProvider';
 
 const SecureRoute = ({children}) => {
     const{doctorData,loading,invalid}=useContext(dataProvider)
-    console.log({doctorData,loading,invalid})
+
     if(loading){
         return <div className='w-full h-screen flex justify-center items-center'><img src="https://i.gifer.com/ZZ5H.gif" alt="" /></div>
     } else if(doctorData){

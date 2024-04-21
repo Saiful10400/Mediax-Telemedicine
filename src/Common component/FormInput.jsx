@@ -14,7 +14,7 @@ const FormInput = ({ type, defaultValue, name, title }) => {
     <div>
       <label className="relative" htmlFor={name}>
         <h1 className="text-md mb-2 font-semibold">{title}</h1>
-        <input
+        <input multiple
           defaultValue={defaultValue}
           className="w-full focus:outline-none border-2 border-gray-300 font-semibold py-2 px-3 rounded-lg"
           type={!hide?"text":type}
