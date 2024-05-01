@@ -10,6 +10,10 @@ import { Link } from "react-router-dom";
 import { IoCallSharp } from "react-icons/io5";
 import { FaFolder } from "react-icons/fa";
 import { AiFillFileText } from "react-icons/ai";
+import { GiCheckMark } from "react-icons/gi";
+import { RxCross2 } from "react-icons/rx";
+import { TiDocumentText } from "react-icons/ti";
+import { axiosPublic } from "../../../../Custom hoocks/useAxiosPublic";
 const DashboardRoute = () => {
   const today = new Date().toDateString().split(" ");
   const todayDatestring = `${today[2]} ${today[1]}-${today[3]} `;
@@ -43,7 +47,12 @@ const DashboardRoute = () => {
   //  next appointment.
   const currentAppointment=todayAppointment[0]
 
-  console.log(currentAppointment)
+  
+  // accept appointment request.
+  const acceptReq=(email)=>{
+    axiosPublic.post("/accept-app-request",{doctorEmail:doctorData.email,patientEmail:email})
+    .then(res=>console.log(res.data))
+  }
 
 
   return (
@@ -122,7 +131,7 @@ const DashboardRoute = () => {
                         <div className="flex items-center gap-3">
                           <div className="avatar">
                             <div className="mask mask-squircle w-12 h-12">
-                              <img
+                              <img className="object-cover"
                                 src={item.ptientPhoto}
                               />
                             </div>
@@ -159,7 +168,7 @@ const DashboardRoute = () => {
             <h1 className="font-bold text-[#2955c7] mb-2">Current Patient Details</h1>
             <div className="flex items-center justify-between ">
               <img
-                className="w-[50px] rounded-full h-[50px]"
+                className="w-[50px] rounded-full h-[50px] object-cover"
                 src={currentAppointment?currentAppointment.ptientPhoto:avatar}
                 alt=""
               />
@@ -178,19 +187,19 @@ const DashboardRoute = () => {
               
               <div className="text-sm">
                 <h1 className="font-bold">Age</h1>
-                <h1>{currentAppointment.age} years</h1>
+                <h1>{currentAppointment?.age} years</h1>
               </div>
               <div className="text-sm">
                 <h1 className="font-bold">Gender</h1>
-                <h1>{currentAppointment.gender}</h1>
+                <h1>{currentAppointment?.gender}</h1>
               </div>
               <div className="text-sm">
                 <h1 className="font-bold">Height</h1>
-                <h1>{currentAppointment.height} cm</h1>
+                <h1>{currentAppointment?.height} cm</h1>
               </div>
               <div className="text-sm">
                 <h1 className="font-bold">Weight</h1>
-                <h1>{currentAppointment.weight} kg</h1>
+                <h1>{currentAppointment?.weight} kg</h1>
               </div>
               <div className="text-sm">
                 <h1 className="font-bold">Patient Type</h1>
@@ -216,7 +225,7 @@ const DashboardRoute = () => {
 
             {/* necessary buttons. */}
             <div className="flex items-center mt-5 justify-between">
-              <button className="flex items-center gap-x-2 text-white bg-[#0b3ca4] p-1 rounded-md"><IoCallSharp /> <span>{currentAppointment.phone}</span></button>
+              <button className="flex items-center gap-x-2 text-white bg-[#0b3ca4] p-1 rounded-md"><IoCallSharp /> <span>{currentAppointment?.phone}</span></button>
               <button className="flex items-center gap-x-2 border border-[#0b3ca4] text-[#0b3ca4] p-1 rounded-md"><FaFolder /> <span>Documents</span></button>
               <button className="flex items-center gap-x-2 border border-[#0b3ca4] text-[#0b3ca4] p-1 rounded-md"><AiFillFileText /> <span>Details</span></button>
             </div>
@@ -242,7 +251,7 @@ const DashboardRoute = () => {
                         <div className="flex items-center gap-3">
                           <div className="avatar">
                             <div className="mask mask-squircle w-12 h-12">
-                              <img
+                              <img className="object-cover"
                                 src={item.ptientPhoto}
                               />
                             </div>
@@ -258,7 +267,11 @@ const DashboardRoute = () => {
                             </div>
                           </div>
                       </td>
-                      <td><span className="bg-[#cdd7f4] p-1 rounded-md">On Going</span></td>
+                      <td><span className="flex items-center gap-x-2 ">
+                        <button onClick={()=>acceptReq(item.email)} className="text-xl p-1 rounded-md text-[#46a168] bg-[#aec0ed]"><GiCheckMark /></button>
+                        <button className="text-xl p-1 rounded-md text-[#de443d] bg-[#ffd1cf]"><RxCross2 /></button>
+                        <button className="text-xl p-1 rounded-md text-[#0d46c1] bg-[#a8d4bc]"><TiDocumentText /></button>
+                        </span></td>
                     </tr>
                         )
                       })

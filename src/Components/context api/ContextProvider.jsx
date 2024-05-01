@@ -39,12 +39,12 @@ const[loading,setLoading]=useState(true)
 const[invalid,setInvalid]=useState(false)
 // chat show or not.
 const[chatShow,setChatShow]=useState(false)
+// notification show or not.
+const[notishow,setNotishow]=useState(false)
+// user type.
+const[userType,setType]=useState(null)
 
 
-// change chat show or not.
-const setchat=()=>{
-  setChatShow(prev=>!prev)
-}
 
 // state for refetch data again.
 const[refire,setRefire]=useState(false)
@@ -54,23 +54,28 @@ const[refire,setRefire]=useState(false)
               
               setPerson(user)
               //  check patient.
-              axiosPublic.post("/get-a-patient-with-email",{email:user.email})
+              axiosPublic.post("/get-a-patient-with-email",{email:user?.email})
               .then(res=>{
    
                 if(res.data){
                   setPerosnData(res.data.data)
-                  
+                  // CONNECT SCKET SERVER as a patient.
+                  if(res.data.data){
+                    setType("patient")
+                    socket.emit("connection",{email:res.data?.data?.email,photoUrl:res.data?.data?.profilePhoto,type:"patient"})
+                  }
                 }
               })
               // Check doctor.
-              axiosPublic.post("/get-a-doctor-data",{email:user.email})
+              axiosPublic.post("/get-a-doctor-data",{email:user?.email})
               .then(res=>{
                 if(res.data){
                   setDoctordata(res.data)
                   setLoading(false)
                  if(res.data.publish){
                    // connect socket server as a doctor.
-                  socket.emit("connection",{email:res.data.email,photoUrl:res.data?.profilePhoto,type:"doctor"})
+                   setType("doctor")
+                  socket.emit("connection",{email:res.data?.email,photoUrl:res.data?.profilePhoto,type:"doctor"})
                  }
                  
                   
@@ -118,15 +123,44 @@ const refetch=()=>{
   // socket io related events handle. ####
 
   // get connected doctors.
-  const[activeDoctors,setActiveDoctors]=useState([])
+  const[activeAccounts,setActiveDoctors]=useState([])
   useEffect(()=>{
-    socket.on("activeDoctors",(data)=>setActiveDoctors(data))
+    socket.on("activeAccounts",(data)=>setActiveDoctors(data))
   },[socket])
-  console.log(activeDoctors)
 
+
+  // ## triggar chat conversation when a user is connected with a doctor.
+  const[chatRefetch,setChatRefetch]=useState(false)
+  const[conversation,SetUserConversaion]=useState(null)
+  useEffect(()=>{
+    if(person){
+      axiosPublic.post("/get-a-user-chat",{email:person.email})
+      .then(res=>SetUserConversaion(res.data))
+      socket.on("chatConnected",data=>SetUserConversaion(data))
+    }
+  },[person,socket,chatRefetch])
+
+console.log(conversation)
+
+  // change chat show or not.
+const setchat=()=>{ 
+  if(person){
+    axiosPublic.post("/modify-a-user-chat-view",{email:person.email})
+    .then(()=>setChatRefetch(prev=>!prev))
+  }
+  setChatShow(prev=>!prev)
+  setNotishow(false)
+}
+ 
+// change noti show or not.
+
+const setNoti=()=>{
+  setNotishow(prev=>!prev)
+  setChatShow(false)
+}
 
     const contextData={
-        logoutHandle,emailAndPasswordsignup,loginWithEmail,person,socket,personData,doctorData,loading,invalid,refetch,setchat,chatShow
+        logoutHandle,emailAndPasswordsignup,setNoti,notishow,loginWithEmail,userType,person,socket,personData,doctorData,loading,invalid,refetch,setchat,chatShow,activeAccounts,conversation
     }
     return (
        <dataProvider.Provider value={contextData}>

@@ -4,18 +4,35 @@ import { PiIdentificationBadge } from "react-icons/pi";
 import { FaUserDoctor } from "react-icons/fa6";
 import { Link, NavLink } from "react-router-dom";
 import { MdOutlineGppGood } from "react-icons/md";
+import { dataProvider } from "../context api/ContextProvider";
 const AllDoctor = () => {
   const [allDoctor, setAllDoctor] = useState([]);
   useEffect(() => {
     axiosPublic.get("/get-all-doctor").then((res) => setAllDoctor(res.data));
   }, [setAllDoctor]);
-  console.log(allDoctor);
+console.log(allDoctor)
+  // get active doctors list.
+  const{activeAccounts}=useContext(dataProvider)
+  
+
+  // validate is any user is active or not.
+  const validateActive=(email)=>{
+    let DoctorArray=activeAccounts?.filter(item=>item.type==="doctor")
+    let validate=DoctorArray?.find(item=>item.email===email)
+    if(validate){
+      return true
+    }
+    else{
+      return false
+    }
+  }
   return (
     <div>
       <div className="grid grid-cols-3 gap-x-9 w-[1400px] mx-auto">
         {allDoctor?.map((item, idx) => {
           return (
-            <div data-aos="zoom-out-up" key={idx} className="bg-[#f3f3f8] rounded-xl p-5">
+            <div data-aos="zoom-out-up" key={idx} className="bg-[#f3f3f8] rounded-xl p-5 relative">
+              <span className={`absolute top-4 left-3 bg-[#34c300] text-white text-sm font-normal p-1 rounded-full px-2 ${!validateActive(item.email)&&"hidden"}`}>Online</span>
               <div className="flex items-center">
                 <div className="w-[50%] flex justify-center items-center">
                   <img
